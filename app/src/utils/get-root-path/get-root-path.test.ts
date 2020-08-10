@@ -9,7 +9,11 @@ describe('Utils / get root path', () => {
 			writable: true,
 		});
 
-		const result = getRootPath();
-		expect(result).toBe('/api/nested/');
+		expect(getRootPath()).toBe('/api/nested/');
+
+		(window as any).$directusAssetBasePath = '/some/other/path/admin';
+		expect(getRootPath()).toBe('/some/other/path/');
+
+		delete (window as any).$directusAssetBasePath;
 	});
 });
