@@ -46,6 +46,18 @@ export default defineInterface(({ i18n }) => ({
 			},
 		},
 		{
+			field: 'placeholder',
+			name: i18n.t('placeholder'),
+			type: 'string',
+			meta: {
+				width: 'full',
+				interface: 'text-input',
+				options: {
+					placeholder: i18n.t('enter_a_placeholder'),
+				},
+			},
+		},
+		{
 			field: 'allowOther',
 			name: i18n.t('interfaces.dropdown.allow_other'),
 			type: 'boolean',
@@ -82,18 +94,6 @@ export default defineInterface(({ i18n }) => ({
 			meta: {
 				width: 'half',
 				interface: 'icon',
-			},
-		},
-		{
-			field: 'placeholder',
-			name: i18n.t('placeholder'),
-			type: 'string',
-			meta: {
-				width: 'half',
-				interface: 'text-input',
-				options: {
-					placeholder: i18n.t('enter_a_placeholder'),
-				},
 			},
 		},
 	],

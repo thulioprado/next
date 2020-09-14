@@ -139,7 +139,8 @@
 			"max_amount": "Maximum Amount",
 			"max_amount_placeholder": "Maximum amount of items...",
 			"edit_fields": "Edit Fields",
-			"add_label": "\"Add New Row\" Label"
+			"add_label": "\"Add New Row\" Label",
+			"edit_raw": "Edit raw values"
 		},
 		"slider": {
 			"slider": "Slider",

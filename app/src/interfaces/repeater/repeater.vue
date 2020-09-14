@@ -1,6 +1,7 @@
 <template>
 	<v-item-group class="repeater" v-model="selection">
-		<draggable :value="value" handle=".drag-handle" @input="onSort" :set-data="hideDragImage">
+		<interface-code v-if="viewRaw" v-model="rawValue" />
+		<draggable v-else :value="value" handle=".drag-handle" @input="onSort" :set-data="hideDragImage">
 			<repeater-row
 				v-for="(row, index) in value"
 				:key="index"
@@ -12,10 +13,18 @@
 				:disabled="disabled"
 			/>
 		</draggable>
-		<button @click="addNew" class="add-new" v-if="showAddNew">
-			<v-icon name="add" />
-			{{ addLabel }}
-		</button>
+		<div class="actions">
+			<button @click="addNew" class="button add-new" v-if="showAddNew">
+				<v-icon name="add" />
+				{{ addLabel }}
+			</button>
+			<v-switch
+				v-model="viewRaw"
+				class="button"
+				v-if="rawEditable"
+				:label="$t('interfaces.repeater.edit_raw')"
+			></v-switch>
+		</div>
 	</v-item-group>
 </template>
 
@@ -54,9 +63,25 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		rawEditable: {
+			type: Boolean,
+			default: true,
+		},
 	},
 	setup(props, { emit }) {
 		const selection = ref<number[]>([]);
+		const viewRaw = ref(false);
+
+		const rawValue = computed({
+			get() {
+				return JSON.stringify(props.value, null, 4);
+			},
+			set(val: string) {
+				try {
+					emit('input', JSON.parse(val));
+				} catch (e) {}
+			},
+		});
 
 		const showAddNew = computed(() => {
 			if (props.disabled) return false;
@@ -66,7 +91,7 @@ export default defineComponent({
 			return false;
 		});
 
-		return { updateValues, onSort, removeItem, addNew, showAddNew, hideDragImage, selection };
+		return { updateValues, onSort, removeItem, addNew, showAddNew, hideDragImage, selection, viewRaw, rawValue };
 
 		function updateValues(index: number, updatedValues: any) {
 			emit(
@@ -119,26 +144,43 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.add-new {
+.actions {
 	display: flex;
-	align-items: center;
-	width: 100%;
-	height: 48px;
+	justify-content: space-between;
 	margin-top: 8px;
-	padding: 10px; // 10 not 12, offset for border
-	color: var(--foreground-subdued);
-	border: 2px dashed var(--border-normal);
-	border-radius: var(--border-radius);
-	transition: var(--fast) var(--transition);
-	transition-property: color, border-color;
 
-	.v-icon {
+	.button {
+		display: flex;
+		width: 50%;
+		height: 48px;
 		margin-right: 8px;
+		padding: 10px; // 10 not 12, offset for border
+		color: var(--foreground);
+		border: 2px solid var(--border-normal);
+		border-radius: var(--border-radius);
+		transition: var(--fast) var(--transition);
+		transition-property: color, border-color;
+
+		&:last-child {
+			margin-right: 0;
+		}
+
+		&:hover {
+			color: var(--primary);
+			border-color: var(--primary);
+		}
+
+		.v-icon {
+			margin-right: 8px;
+		}
 	}
 
-	&:hover {
-		color: var(--primary);
-		border-color: var(--primary);
+	.add-new {
+		align-items: center;
+		width: 100%;
+		color: var(--foreground-subdued);
+		border: 2px dashed var(--border-normal);
+		border-radius: var(--border-radius);
 	}
 }
 </style>
